@@ -1,11 +1,23 @@
+"use client";
+
 import { Menu } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { FaHourglassStart } from "react-icons/fa6";
 
 
 const Header = () => {
+  const pathname = usePathname();
+
+  const navItems = [
+    { href: "/dashboard", label: "Dashboard" },
+    { href: "/create", label: "Create" },
+    { href: "/profile", label: "Profile" },
+    { href: "/settings", label: "Settings" },
+  ];
+
   return (
-    <nav className="px-4 py-6 border-b md:px-8">
+    <nav className="px-4 py-6 border-b md:px-40">
       <div className="flex items-center justify-between">
         {/* Logo */}
 
@@ -19,18 +31,19 @@ const Header = () => {
         {/* Navigation */}
         <div>
           <ul className="hidden md:flex md:items-center md:gap-6">
-            <Link href={"/dashboard"} className="font-semibold">
-              Dashboard
-            </Link>
-            <Link href={"/create"} className="font-semibold">
-              Create
-            </Link>
-            <Link href={"/profile"} className="font-semibold">
-              Profile
-            </Link>
-            <Link href={"/settings"} className="font-semibold">
-              Settings
-            </Link>
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`font-semibold transition-colors ${
+                  pathname === item.href
+                    ? "text-white "
+                    : "text-gray-400 hover:text-[#c4c5c9]"
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
           </ul>
         </div>
 
