@@ -1,6 +1,10 @@
+import TopMainSection from "@/components/homepage/top-main";
+
 const HomePage = () => {
   return (
-    <div>HomePage</div>
-  )
-}
-export default HomePage
+    <div>
+      <TopMainSection />
+    </div>
+  );
+};
+export default HomePage;
