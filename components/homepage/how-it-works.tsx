@@ -23,14 +23,14 @@ const steps = [
 
 const HowItWorks = () => {
   return (
-    <section className="mx-auto max-w-3xl px-6 py-14 my-8">
+    <section className="mx-auto max-w-3xl px-6 pt-14 pb-8 my-8">
       <div className="mb-10">
         <h2 className="text-2xl font-semibold text-white">How It Works</h2>
         <div className="mt-3 h-px w-full bg-white/10" />
       </div>
 
       <div className="relative">
-        <div className="absolute left-7 -top-8 h-full w-px bg-white/10" />
+        <div className="absolute left-4.5 -top-8 h-full w-px bg-white/10 md:left-7" />
 
         <div className="space-y-16">
           {steps.map((step, index) => {
@@ -38,7 +38,7 @@ const HowItWorks = () => {
 
             return (
               <div key={index} className="relative flex gap-6">
-                <div className="relative z-10 flex h-14 w-14 items-center justify-center rounded-full bg-slate-900 ring-2 ring-blue-500/60">
+                <div className="relative z-10 flex h-9 w-9 p-2 items-center justify-center rounded-full bg-slate-900 ring-2 ring-blue-500/60 md:h-14 md:w-14">
                   <Icon className="h-6 w-6 text-blue-400" />
                 </div>
 
