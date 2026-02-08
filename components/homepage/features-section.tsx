@@ -2,7 +2,7 @@ import FeatureCard from "./feature-card";
 
 const FeaturesSection = () => {
   return (
-    <div className="mt-10">
+    <section className="mt-10">
       <div className="text-center">
         <p className="text-3xl font-bold">Core Features</p>
         <p className="text-sm text-gray-400 mt-3">
@@ -31,7 +31,7 @@ const FeaturesSection = () => {
           description="Provide blurry previews or cryptic clues to build anticipation before the reveal date arrives."
         />
       </div>
-    </div>
+    </section>
   );
 };
 export default FeaturesSection;

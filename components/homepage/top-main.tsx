@@ -2,7 +2,7 @@ import { Button } from "../ui/button";
 
 const TopMainSection = () => {
   return (
-    <div className="relative mt-8 lg:mt-12">
+    <section className="relative mt-8 lg:mt-12">
       <div
         className="absolute inset-0 bg-cover opacity-40"
         style={{ backgroundImage: "url('/bg.png')", backgroundPosition: 'center 55%' }}
@@ -22,7 +22,7 @@ const TopMainSection = () => {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 export default TopMainSection;
