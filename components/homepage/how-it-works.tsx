@@ -23,7 +23,7 @@ const steps = [
 
 const HowItWorks = () => {
   return (
-    <section className="mx-auto max-w-3xl px-6 pt-14 pb-8 my-8">
+    <section id="how-it-works" className="mx-auto max-w-3xl px-6 pt-14 pb-8 my-8">
       <div className="mb-10">
         <h2 className="text-2xl font-semibold text-white">How It Works</h2>
         <div className="mt-3 h-px w-full bg-white/10" />
