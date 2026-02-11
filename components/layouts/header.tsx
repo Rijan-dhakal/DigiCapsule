@@ -5,11 +5,11 @@ import { Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FaHourglassStart } from "react-icons/fa6";
+import { Button } from "../ui/button";
 
 const Header = () => {
   const pathname = usePathname();
   const { data, isPending } = useSession();
-  console.log(data);
 
   const loggedInNavItems = [
     { href: "/dashboard", label: "Dashboard" },
@@ -23,17 +23,21 @@ const Header = () => {
     { href: "/#how-it-works", label: "How it works" },
   ];
 
-  const handleSectionClick = (e: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => {
+  const handleSectionClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    sectionId: string,
+  ) => {
     e.preventDefault();
     const section = document.getElementById(sectionId);
     if (section) {
       const headerOffset = 90;
       const elementPosition = section.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      const offsetPosition =
+        elementPosition + window.pageYOffset - headerOffset;
 
       window.scrollTo({
         top: offsetPosition,
-        behavior: "smooth"
+        behavior: "smooth",
       });
     }
   };
@@ -92,7 +96,15 @@ const Header = () => {
           </ul>
         </div>
 
-        <div className="hidden md:block">Profile</div>
+        <div className="hidden md:block">
+          {isPending ? null : data?.user ? "Profile" : (
+            <Button asChild className="px-4 py-2 text-lg shadow">
+              <Link href={"/login"}>
+              Sign up
+              </Link>
+            </Button>
+          )}
+        </div>
 
         <div className="pr-4 md:hidden">
           <Menu size={24} />

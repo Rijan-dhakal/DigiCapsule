@@ -3,14 +3,23 @@
 import { Button } from "@/components/ui/button";
 import { FcGoogle } from "react-icons/fc";
 import { createAuthClient } from "better-auth/client";
+import { toast } from "sonner";
 
 const LoginButton = () => {
   const authClient = createAuthClient();
   const signIn = async () => {
-    await authClient.signIn.social({
-      provider: "google",
-      callbackURL: "/",
-    });
+    try {
+      const resp = await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/dashboard",
+      });
+      if (resp.error) {
+        return toast.error(resp.error.message);
+      }
+    } catch (e: any) {
+      console.error(e.message);
+      return toast.error(e.message);
+    }
   };
 
   return (
