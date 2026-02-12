@@ -1,62 +1,24 @@
-import { getSessionCookie } from "better-auth/cookies";
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
 
 export async function proxy(request: NextRequest) {
-  const pathName = request.nextUrl.pathname;
+  const { pathname } = request.nextUrl;
 
-  try {
-    const session = getSessionCookie(request);
+  const session = await auth.api.getSession({
+    headers: request.headers,
+  });
 
-    if (!session && pathName === "/login") {
-      return NextResponse.next();
-    }
+  const isAuthenticated = !!session?.user;
 
-    if (!session && pathName === "/") {
-      return NextResponse.next();
-    }
+  if (isAuthenticated && (pathname === "/" || pathname === "/login")) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
 
-    if (!session) {
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
-
-    const sessionResponse = await fetch(
-      `${process.env.BASE_URL || request.nextUrl.origin}/api/auth/get-session`,
-      {
-        headers: {
-          Cookie: `better-auth.session_token=${session}`,
-        },
-      },
-    );
-
-    if (!sessionResponse.ok && pathName === "/login") {
-      return NextResponse.next();
-    }
-
-    if (!sessionResponse.ok && pathName === "/") {
-      return NextResponse.next();
-    }
-
-    if (!sessionResponse.ok) {
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
-
-    if (sessionResponse.ok && pathName === "/login") {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
-    }
-
-    if (sessionResponse.ok && pathName === "/") {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
-    }
-
-    return NextResponse.next();
-  } catch (error: any) {
-    console.log(error.message);
-
-    if (pathName === "/auth") {
-      return NextResponse.next();
-    }
+  if (!isAuthenticated && pathname === "/dashboard") {
     return NextResponse.redirect(new URL("/login", request.url));
   }
+
+  return NextResponse.next();
 }
 
 export const config = {

@@ -59,7 +59,7 @@ const Header = () => {
         <div>
           <ul className="hidden md:flex md:items-center md:gap-6">
             {isPending
-              ? null
+              ? "Loading.."
               : data?.user
                 ? loggedInNavItems.map((item) => (
                     <Link
