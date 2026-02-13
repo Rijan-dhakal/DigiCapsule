@@ -21,10 +21,7 @@ const HamburgerMenu = ({
   return (
     <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
       <SheetTrigger className="md:hidden">
-        {
-          isSheetOpen? <X size={34} /> : <Menu size={34} />
-        }
-        
+        {isSheetOpen ? <X size={34} /> : <Menu size={34} />}
       </SheetTrigger>
       <SheetContent className="md:hidden">
         <SheetHeader>
@@ -45,7 +42,9 @@ const HamburgerMenu = ({
         </div>
         <div className="flex items-center justify-center">
           {isPending ? (
-            ""
+            null
+          ) : data?.user ? (
+            null
           ) : (
             <HamburgerSignupButton setIsSheetOpen={setIsSheetOpen} />
           )}
