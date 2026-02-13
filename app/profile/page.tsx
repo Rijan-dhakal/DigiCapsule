@@ -1,6 +1,6 @@
-const Dashboard = () => {
+const ProfilePage = () => {
   return <div className="min-h-[90vh] md:min-h-[85vh] lg:min-h-[80vh]">
-    Dashboard
+    Profile page
   </div>;
 };
-export default Dashboard;
+export default ProfilePage;

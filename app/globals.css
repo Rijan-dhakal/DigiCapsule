@@ -96,4 +96,30 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* Custom Scrollbar Styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: var(--background-dark);
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-dark);
+    border-radius: 4px;
+    transition: background 0.2s ease;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+  }
+  
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-dark) var(--background-dark);
+  }
 }
