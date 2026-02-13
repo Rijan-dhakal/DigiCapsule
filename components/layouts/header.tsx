@@ -1,15 +1,17 @@
 "use client";
 
 import { useSession } from "@/lib/auth-client";
-import { Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FaHourglassStart } from "react-icons/fa6";
 import { Button } from "../ui/button";
+import { useState } from "react";
+import HamburgerMenu from "../homepage/hamburger-menu";
 
 const Header = () => {
   const pathname = usePathname();
   const { data, isPending } = useSession();
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const loggedInNavItems = [
     { href: "/dashboard", label: "Dashboard" },
@@ -19,10 +21,32 @@ const Header = () => {
   ];
 
   const navItems = [
-    {href: "/", label: "Home"},
     { href: "/#features", label: "Features" },
     { href: "/#how-it-works", label: "How it works" },
   ];
+
+  const renderNavItems = (items: typeof navItems) =>
+    items.map((item) => (
+      <Link
+        key={item.href}
+        href={item.href}
+        onClick={(e) => {
+          if (item.label === "Features") {
+            handleSectionClick(e, "features");
+          } else if (item.label === "How it works") {
+            handleSectionClick(e, "how-it-works");
+          }
+          setIsSheetOpen(false);
+        }}
+        className={`font-semibold transition-colors ${
+          pathname === item.href
+            ? "text-white"
+            : "text-gray-400 hover:text-[#c4c5c9]"
+        }`}
+      >
+        {item.label}
+      </Link>
+    ));
 
   const handleSectionClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
@@ -61,54 +85,31 @@ const Header = () => {
             {isPending
               ? "Loading.."
               : data?.user
-                ? loggedInNavItems.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={`font-semibold transition-colors ${
-                        pathname === item.href
-                          ? "text-white "
-                          : "text-gray-400 hover:text-[#c4c5c9]"
-                      }`}
-                    >
-                      {item.label}
-                    </Link>
-                  ))
-                : navItems.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={(e) => {
-                        if (item.label === "Features") {
-                          handleSectionClick(e, "features");
-                        } else if (item.label === "How it works") {
-                          handleSectionClick(e, "how-it-works");
-                        }
-                      }}
-                      className={`font-semibold transition-colors ${
-                        pathname === item.href
-                          ? "text-white "
-                          : "text-gray-400 hover:text-[#c4c5c9]"
-                      }`}
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
+                ? renderNavItems(loggedInNavItems)
+                : renderNavItems(navItems)}
           </ul>
         </div>
 
         <div className="hidden md:block">
-          {isPending ? null : data?.user ? "Profile" : (
+          {isPending ? null : data?.user ? (
+            "Profile"
+          ) : (
             <Button asChild className="px-4 py-2 text-lg shadow">
-              <Link href={"/login"}>
-              Sign up
-              </Link>
+              <Link href={"/login"}>Sign up</Link>
             </Button>
           )}
         </div>
 
         <div className="pr-4 md:hidden">
-          <Menu size={24} />
+          <HamburgerMenu
+            isPending={isPending}
+            data={data}
+            isSheetOpen={isSheetOpen}
+            loggedInNavItems={loggedInNavItems}
+            navItems={navItems}
+            renderNavItems={renderNavItems}
+            setIsSheetOpen={setIsSheetOpen}
+          />
         </div>
       </div>
     </nav>
