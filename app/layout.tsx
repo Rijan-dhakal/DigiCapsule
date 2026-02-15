@@ -34,9 +34,9 @@ export default function RootLayout({
           <Header />
         </div>
 
-        <div className=" mx-auto px-4 md:max-w-11/12 lg:max-w-4/5">
+        <main className=" mx-auto px-4 md:max-w-11/12 lg:max-w-4/5">
           {children}
-        </div>
+        </main>
         <Toaster position="top-right" />
         <div>
           <Footer />

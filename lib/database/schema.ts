@@ -99,39 +99,51 @@ export const verification = pgTable(
 );
 
 //  capsule
-export const capsule = pgTable("capsule", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-  title: text("title").notNull(),
-  category: varchar("category", { length: 30 }).notNull(),
-  content: text("content").notNull(),
-  unlockAt: timestamp("unlock_at", { withTimezone: true }).notNull(),
-  status: capsuleStatusEnum("status").notNull().default("locked"),
-  hint: varchar("hint", { length: 100 }),
-  recipientEmail: varchar("recipient_email", { length: 100 }),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .defaultNow()
-    .$onUpdate(() => new Date()),
-});
+export const capsule = pgTable(
+  "capsule",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    category: varchar("category", { length: 30 }).notNull(),
+    content: text("content").notNull(),
+    unlockAt: timestamp("unlock_at", { withTimezone: true }).notNull(),
+    status: capsuleStatusEnum("status").notNull().default("locked"),
+    hint: varchar("hint", { length: 100 }),
+    recipientEmail: varchar("recipient_email", { length: 100 }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [
+    index("capsule_userId_idx").on(table.userId),
+    index("capsule_unlockAt_idx").on(table.unlockAt),
+    index("capsule_status_idx").on(table.status),
+  ],
+);
 
 // capsule files
-export const capsuleFiles = pgTable("capsule_files", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  capsuleId: uuid("capsule_id")
-    .references(() => capsule.id, { onDelete: "cascade" })
-    .notNull(),
-  url: text("url").notNull(),
-  publicId: varchar("public_id", { length: 255 }).notNull(),
-  fileType: varchar("file_type", { length: 50 }).notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-});
+export const capsuleFiles = pgTable(
+  "capsule_files",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    capsuleId: uuid("capsule_id")
+      .references(() => capsule.id, { onDelete: "cascade" })
+      .notNull(),
+    url: text("url").notNull(),
+    publicId: varchar("public_id", { length: 255 }).notNull(),
+    fileType: varchar("file_type", { length: 50 }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [index("capsuleFiles_capsuleId_idx").on(table.capsuleId)],
+);
 
 // Relations
 export const userRelations = relations(user, ({ many }) => ({
