@@ -113,6 +113,7 @@ export const capsule = pgTable(
     status: capsuleStatusEnum("status").notNull().default("locked"),
     hint: varchar("hint", { length: 100 }),
     recipientEmail: varchar("recipient_email", { length: 100 }),
+    isDelivered: boolean("isDelivered").default(false).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
       .defaultNow()
       .notNull(),

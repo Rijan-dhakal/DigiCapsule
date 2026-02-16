@@ -15,6 +15,13 @@
       "when": 1771056134844,
       "tag": "0001_capsule_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1771235310008,
+      "tag": "0002_modified_capsule_schema",
+      "breakpoints": true
     }
   ]
 }
