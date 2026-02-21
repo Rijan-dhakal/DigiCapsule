@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   pgTable,
   text,
@@ -8,6 +8,7 @@ import {
   uuid,
   varchar,
   pgEnum,
+  check,
 } from "drizzle-orm/pg-core";
 
 export const capsuleStatusEnum = pgEnum("status", ["unlocked", "locked"]);
@@ -125,6 +126,8 @@ export const capsule = pgTable(
     index("capsule_userId_idx").on(table.userId),
     index("capsule_unlockAt_idx").on(table.unlockAt),
     index("capsule_status_idx").on(table.status),
+
+    check("unlock_at_future_check", sql`${table.unlockAt} > now()`),
   ],
 );
 
