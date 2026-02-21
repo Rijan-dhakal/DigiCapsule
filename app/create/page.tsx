@@ -5,13 +5,6 @@ import { FaArrowLeft } from "react-icons/fa6";
 import { useForm, type FieldValues } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CapsuleSchema, TCapsuleSchema } from "@/lib/validators/capsules";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import CardComponent from "./card-component";
 
 const CreatePage = () => {
@@ -56,7 +49,7 @@ const CreatePage = () => {
           className="flex flex-col gap-y-5"
         >
           <div>
-            <CardComponent count={1} register={register} title="The Basics">
+            <CardComponent count={1} title="The Basics">
               <label htmlFor="input" className="font-semibold text-lg">
                 Capsule Title
               </label>
@@ -72,7 +65,7 @@ const CreatePage = () => {
 
           {/* Markdown for content */}
           <div>
-            <CardComponent count={2} register={register} title="The Memory">
+            <CardComponent count={2} title="The Memory">
               <p>Implement markdown here with file uploads</p>
             </CardComponent>
           </div>

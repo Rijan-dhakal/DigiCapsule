@@ -5,17 +5,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { UseFormRegister } from "react-hook-form";
-import { TCapsuleSchema } from "@/lib/validators/capsules";
 
 interface CardComponentProps{
     children: React.ReactNode,
-    register: UseFormRegister<TCapsuleSchema>
     count: number
     title: string
 }
 
-const CardComponent = ({children, register, count, title}:CardComponentProps) => {
+const CardComponent = ({children, count, title}:CardComponentProps) => {
   return (
     <Card>
       <CardHeader>
