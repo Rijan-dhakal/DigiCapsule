@@ -8,6 +8,7 @@ import { CapsuleSchema, TCapsuleSchema } from "@/lib/validators/capsules";
 import CardComponent from "./card-component";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import MarkdownEditor from "./markdown-editor";
 
 const CreatePage = () => {
   const {
@@ -69,7 +70,24 @@ const CreatePage = () => {
           {/* Markdown for content */}
           <div>
             <CardComponent count={2} title="The Memory">
-              <p>Implement markdown here with file uploads</p>
+              <label className="font-semibold text-lg mb-2">
+                Capsule Content
+              </label>
+              <Controller
+                name="content"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <MarkdownEditor
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+
+              {errors.content && (
+                <p className="text-red-500 text-sm">{errors.content.message}</p>
+              )}
             </CardComponent>
           </div>
 
