@@ -14,7 +14,6 @@ export const CapsuleSchema = z.object({
     .refine((date) => date > new Date(), {
       message: "Unlock time must be in the future",
     }),
-  status: z.enum(["locked", "unlocked"]),
   hint: z.string().max(100, "Hint must be at most 100 characters").optional(),
   recipientEmail: z.email("Invalid Email"),
   // Add file validation later if needed

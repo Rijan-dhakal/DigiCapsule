@@ -2,13 +2,15 @@
 
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa6";
-import { Controller, useForm, type FieldValues } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CapsuleSchema, TCapsuleSchema } from "@/lib/validators/capsules";
 import CardComponent from "./card-component";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import MarkdownEditor from "./markdown-editor";
+import { Button } from "@/components/ui/button";
+import ErrorContainer from "./error-container";
 
 const CreatePage = () => {
   const {
@@ -21,7 +23,9 @@ const CreatePage = () => {
     resolver: zodResolver(CapsuleSchema),
   });
 
-  const onSubmit = function () {};
+  const onSubmit = function (data: TCapsuleSchema) {
+    console.log("Hello", data.content);
+  };
 
   return (
     <div className="min-h-[90vh] mx-auto max-w-3xl md:min-h-[85vh] lg:min-h-[80vh]">
@@ -45,25 +49,53 @@ const CreatePage = () => {
         </p>
       </div>
 
-      {/* Title */}
       <div className="mt-4 overflow-y-scroll">
         <form
           id="form"
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-y-5"
         >
+          {/* Title and category */}
           <div>
             <CardComponent count={1} title="The Basics">
-              <label htmlFor="input" className="font-semibold text-lg">
-                Capsule Title
-              </label>
-              <input
-                id="input"
-                type="text"
-                {...register("title")}
-                placeholder="Trip to nepal"
-                className="h-10 py-4 px-3 font-semibold border border-gray-500 rounded bg-gray-800 outline-none focus:border-gray-300"
-              />
+              <div className="flex flex-col gap-10">
+
+                {/* Title */}
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="input" className="font-semibold text-lg">
+                    Capsule Title
+                  </label>
+                  <input
+                    id="input"
+                    type="text"
+                    {...register("title")}
+                    placeholder="Trip to nepal"
+                    className="h-10 py-4 px-3 font-semibold border border-gray-500 rounded bg-gray-800 outline-none focus:border-gray-300"
+                  />
+
+                  {errors.title && (
+                    <ErrorContainer message={errors.title.message} />
+                  )}
+                </div>
+
+                {/* Category */}
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="category" className="font-semibold text-lg">
+                    Category
+                  </label>
+                  <input
+                    id="category"
+                    type="text"
+                    max={30}
+                    {...register("category")}
+                    placeholder="eg. Memory"
+                    className="h-10 py-4 px-3 font-semibold border border-gray-500 rounded bg-gray-800 outline-none focus:border-gray-300"
+                  />
+                  {errors.category && (
+                    <ErrorContainer message={errors.category.message} />
+                  )}
+                </div>
+              </div>
             </CardComponent>
           </div>
 
@@ -86,7 +118,7 @@ const CreatePage = () => {
               />
 
               {errors.content && (
-                <p className="text-red-500 text-sm">{errors.content.message}</p>
+                <ErrorContainer message={errors.content.message} />
               )}
             </CardComponent>
           </div>
@@ -117,6 +149,9 @@ const CreatePage = () => {
                     />
                   )}
                 />
+                {errors.unlockAt && (
+                  <ErrorContainer message={errors.unlockAt.message} />
+                )}
               </div>
 
               <div className="mt-8 flex flex-col space-y-2">
@@ -132,6 +167,9 @@ const CreatePage = () => {
                   placeholder="eg. Graduation day"
                   className="h-10 py-4 px-3 font-semibold border border-gray-500 rounded bg-gray-800 outline-none focus:border-gray-300"
                 />
+                {errors.hint && (
+                  <ErrorContainer message={errors.hint.message} />
+                )}
               </div>
             </CardComponent>
           </div>
@@ -152,7 +190,14 @@ const CreatePage = () => {
                 placeholder="person@example.com"
                 className="h-10 py-4 px-3 font-semibold border border-gray-500 rounded bg-gray-800 outline-none focus:border-gray-300"
               />
+              {errors.recipientEmail && (
+                <ErrorContainer message={errors.recipientEmail.message} />
+              )}
             </CardComponent>
+          </div>
+
+          <div>
+            <Button type="submit">Next</Button>
           </div>
         </form>
       </div>
