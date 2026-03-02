@@ -2,6 +2,7 @@ import { Menu, X } from "lucide-react";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -25,7 +26,8 @@ const HamburgerMenu = ({
       </SheetTrigger>
       <SheetContent className="md:hidden">
         <SheetHeader>
-          <SheetTitle> </SheetTitle>
+          <SheetTitle></SheetTitle>
+          <SheetDescription></SheetDescription>
         </SheetHeader>
         <div className="mt-7 items-center pt-2 md:hidden">
           <div className="border-b p-4">
@@ -41,11 +43,7 @@ const HamburgerMenu = ({
           </ul>
         </div>
         <div className="flex items-center justify-center">
-          {isPending ? (
-            null
-          ) : data?.user ? (
-            null
-          ) : (
+          {isPending ? null : data?.user ? null : (
             <HamburgerSignupButton setIsSheetOpen={setIsSheetOpen} />
           )}
         </div>

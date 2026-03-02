@@ -1,9 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import "@uiw/react-md-editor/markdown-editor.css";
-import "@uiw/react-markdown-preview/markdown.css";
 import rehypeSanitize from "rehype-sanitize";
+import remarkGfm from "remark-gfm";
 
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), {
   ssr: false,
@@ -26,7 +25,9 @@ export default function MarkdownEditor({
         height={400}
         preview="live"
           previewOptions={{
+          skipHtml: true,
           rehypePlugins: [[rehypeSanitize]],
+          remarkPlugins: [remarkGfm],
         }}
       />
     </div>

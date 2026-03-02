@@ -24,7 +24,7 @@ const CreatePage = () => {
   });
 
   const onSubmit = function (data: TCapsuleSchema) {
-    console.log("Hello", data.content);
+    console.log(data.content);
   };
 
   return (
@@ -192,6 +192,28 @@ const CreatePage = () => {
               />
               {errors.recipientEmail && (
                 <ErrorContainer message={errors.recipientEmail.message} />
+              )}
+            </CardComponent>
+          </div>
+
+
+          <div>
+            <CardComponent count={5} title="Password">
+              <label htmlFor="capsulePassword" className="font-semibold text-lg flex items-center gap-1">
+                Capsule password
+                <p className="text-sm text-gray-500 mb-2">
+                 (Optional)
+                </p>
+              </label>
+              <input
+                id="capsulePassword"
+                type="password"
+                {...register("capsulePassword")}
+                placeholder="****"
+                className="h-10 py-4 px-3 font-semibold border border-gray-500 rounded bg-gray-800 outline-none focus:border-gray-300"
+              />
+              {errors.capsulePassword && (
+                <ErrorContainer message={errors.capsulePassword.message} />
               )}
             </CardComponent>
           </div>
