@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CapsuleSchema, TCapsuleSchema } from "@/lib/validators/capsules";
 import CardComponent from "./card-component";
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import MarkdownEditor from "./markdown-editor";
 import { Button } from "@/components/ui/button";
 import ErrorContainer from "./error-container";
@@ -69,7 +68,7 @@ const CreatePage = () => {
                     id="input"
                     type="text"
                     {...register("title")}
-                    placeholder="Trip to nepal"
+                    placeholder="Trip to Nepal"
                     className="h-10 py-4 px-3 font-semibold border border-gray-500 rounded bg-gray-800 outline-none focus:border-gray-300"
                   />
 
@@ -218,8 +217,8 @@ const CreatePage = () => {
             </CardComponent>
           </div>
 
-          <div>
-            <Button type="submit">Next</Button>
+          <div className="mb-4">
+            <Button type="submit" disabled={isSubmitting} className="px-4 py-2 w-full text-lg font-semibold rounded-md cursor-pointer ">Create Capsule</Button>
           </div>
         </form>
       </div>

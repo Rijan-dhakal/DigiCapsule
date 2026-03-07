@@ -6,6 +6,7 @@ import Footer from "@/components/layouts/footer";
 import { Toaster } from "@/components/ui/sonner";
 import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
+import "react-datepicker/dist/react-datepicker.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
