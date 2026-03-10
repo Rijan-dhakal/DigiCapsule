@@ -10,6 +10,7 @@ import DatePicker from "react-datepicker";
 import MarkdownEditor from "./markdown-editor";
 import { Button } from "@/components/ui/button";
 import ErrorContainer from "./error-container";
+import FileUpload from "./file-uploads";
 
 const CreatePage = () => {
   const {
@@ -23,7 +24,8 @@ const CreatePage = () => {
   });
 
   const onSubmit = function (data: TCapsuleSchema) {
-    console.log(data.content);
+    console.log(data);
+    console.log("Files:", data.files);
   };
 
   return (
@@ -119,6 +121,20 @@ const CreatePage = () => {
               {errors.content && (
                 <ErrorContainer message={errors.content.message} />
               )}
+
+              <div className="mt-4">
+                <Controller
+                  name="files"
+                  control={control}
+                  defaultValue={[]}
+                  render={({ field }) => (
+                    <FileUpload
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
+              </div>
             </CardComponent>
           </div>
 

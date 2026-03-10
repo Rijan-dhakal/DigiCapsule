@@ -23,7 +23,7 @@ export const CapsuleSchema = z.object({
     .string()
     .min(4, "Password must be at least 4 characters")
     .max(16, "Password must be less than 16 characters"),
-  // Add file validation later if needed
+  files: z.array(z.instanceof(File)).optional(),
 });
 
 export type TCapsuleSchema = z.infer<typeof CapsuleSchema>;
