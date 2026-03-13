@@ -10,11 +10,12 @@ cloudinary.config({
 export async function POST(request: Request) {
   try {
     const { timestamp } = await request.json();
+    const folder = "digicapsule";
 
     const signature = cloudinary.utils.api_sign_request(
       {
         timestamp,
-        folder: "digicapsule",
+        folder,
       },
       process.env.CLOUDINARY_API_SECRET as string,
     );
@@ -22,6 +23,9 @@ export async function POST(request: Request) {
     return NextResponse.json({
       signature,
       timestamp,
+      folder,
+      cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+      apiKey: process.env.CLOUDINARY_API_KEY,
     });
 
   } catch (error: any) {

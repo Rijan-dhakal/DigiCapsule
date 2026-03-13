@@ -11,6 +11,23 @@ import MarkdownEditor from "./markdown-editor";
 import { Button } from "@/components/ui/button";
 import ErrorContainer from "./error-container";
 import FileUpload from "./file-uploads";
+import { toast } from "sonner";
+
+interface CloudinarySignatureResponse {
+  signature: string;
+  timestamp: number;
+  folder: string;
+  cloudName: string;
+  apiKey: string;
+}
+
+interface UploadedAsset {
+  url: string;
+  secureUrl: string;
+  publicId: string;
+  resourceType: string;
+  originalFilename: string;
+}
 
 const CreatePage = () => {
   const {
@@ -23,10 +40,62 @@ const CreatePage = () => {
     resolver: zodResolver(CapsuleSchema),
   });
 
-  const onSubmit = function (data: TCapsuleSchema) {
-    console.log(data);
-    console.log("Files:", data.files);
+  const uploadToCloudinary = async (file: File): Promise<UploadedAsset> => {
+    const timestamp = Math.floor(Date.now() / 1000);
+
+    const signatureResponse = await fetch("/api/cloudinary/signature", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ timestamp }),
+    });
+
+    if (!signatureResponse.ok) {
+      throw new Error("Unable to generate Cloudinary upload signature");
+    }
+
+    const signatureData =
+      (await signatureResponse.json()) as CloudinarySignatureResponse;
+
+    if (!signatureData.cloudName || !signatureData.apiKey) {
+      throw new Error("Missing Cloudinary cloud name or API key");
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("api_key", signatureData.apiKey);
+    formData.append("timestamp", String(signatureData.timestamp));
+    formData.append("signature", signatureData.signature);
+    formData.append("folder", signatureData.folder);
+
+    const uploadResponse = await fetch(
+      `https://api.cloudinary.com/v1_1/${signatureData.cloudName}/auto/upload`,
+      {
+        method: "POST",
+        body: formData,
+      },
+    );
+
+    if (!uploadResponse.ok) {
+      const uploadError = await uploadResponse.json().catch(() => null);
+      const uploadErrorMessage =
+        uploadError?.error?.message || "Failed to upload file to Cloudinary";
+      throw new Error(uploadErrorMessage);
+    }
+
+    const uploadData = await uploadResponse.json();
+
+    return {
+      url: uploadData.url,
+      secureUrl: uploadData.secure_url,
+      publicId: uploadData.public_id,
+      resourceType: uploadData.resource_type,
+      originalFilename: uploadData.original_filename,
+    };
   };
+
+  const onSubmit = function() {};
 
   return (
     <div className="min-h-[90vh] mx-auto max-w-3xl md:min-h-[85vh] lg:min-h-[80vh]">
@@ -60,7 +129,6 @@ const CreatePage = () => {
           <div>
             <CardComponent count={1} title="The Basics">
               <div className="flex flex-col gap-10">
-
                 {/* Title */}
                 <div className="flex flex-col gap-2">
                   <label htmlFor="input" className="font-semibold text-lg">
@@ -122,16 +190,15 @@ const CreatePage = () => {
                 <ErrorContainer message={errors.content.message} />
               )}
 
+              {/* Container for file uploads */}
+
               <div className="mt-4">
                 <Controller
                   name="files"
                   control={control}
                   defaultValue={[]}
                   render={({ field }) => (
-                    <FileUpload
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
+                    <FileUpload value={field.value} onChange={field.onChange} />
                   )}
                 />
               </div>
@@ -177,7 +244,7 @@ const CreatePage = () => {
                 </label>
                 <input
                   id="hint"
-                  type="email"
+                  type="text"
                   {...register("hint")}
                   placeholder="eg. Graduation day"
                   className="h-10 py-4 px-3 font-semibold border border-gray-500 rounded bg-gray-800 outline-none focus:border-gray-300"
@@ -200,7 +267,7 @@ const CreatePage = () => {
               </label>
               <input
                 id="recipientEmail"
-                type="text"
+                type="email"
                 {...register("recipientEmail")}
                 placeholder="person@example.com"
                 className="h-10 py-4 px-3 font-semibold border border-gray-500 rounded bg-gray-800 outline-none focus:border-gray-300"
@@ -211,14 +278,14 @@ const CreatePage = () => {
             </CardComponent>
           </div>
 
-
           <div>
             <CardComponent count={5} title="Password">
-              <label htmlFor="capsulePassword" className="font-semibold text-lg flex items-center gap-1">
+              <label
+                htmlFor="capsulePassword"
+                className="font-semibold text-lg flex items-center gap-1"
+              >
                 Capsule password
-                <p className="text-sm text-gray-500 mb-2">
-                 (Optional)
-                </p>
+                <p className="text-sm text-gray-500 mb-2">(Optional)</p>
               </label>
               <input
                 id="capsulePassword"
@@ -234,7 +301,13 @@ const CreatePage = () => {
           </div>
 
           <div className="mb-4">
-            <Button type="submit" disabled={isSubmitting} className="px-4 py-2 w-full text-lg font-semibold rounded-md cursor-pointer ">Create Capsule</Button>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="px-4 py-2 w-full text-lg font-semibold rounded-md cursor-pointer "
+            >
+              Create Capsule
+            </Button>
           </div>
         </form>
       </div>
