@@ -95,7 +95,41 @@ const CreatePage = () => {
     };
   };
 
-  const onSubmit = function() {};
+  const onSubmit = async function (data: TCapsuleSchema) {
+    try {
+      const filesToUpload = data.files ?? [];
+      let uploadedAssets: UploadedAsset[] = [];
+
+      if (filesToUpload.length > 0) {
+        toast.loading("Uploading files to Cloudinary...", {
+          id: "cloudinary-upload",
+        });
+
+        uploadedAssets = await Promise.all(
+          filesToUpload.map((file) => uploadToCloudinary(file)),
+        );
+
+        toast.success("Files uploaded successfully", {
+          id: "cloudinary-upload",
+        });
+      }
+
+      const payload = {
+        ...data,
+        uploadedAssets,
+      };
+
+      console.log("Payload:", payload);
+      reset();
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "File upload failed";
+      toast.error(message, {
+        id: "cloudinary-upload",
+      });
+      console.error("Cloudinary upload failed:", error);
+    }
+  };
 
   return (
     <div className="min-h-[90vh] mx-auto max-w-3xl md:min-h-[85vh] lg:min-h-[80vh]">
