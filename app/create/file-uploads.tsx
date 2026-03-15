@@ -4,6 +4,7 @@ import { useDropzone } from "react-dropzone";
 import { Card } from "@/components/ui/card";
 import { FileText, X } from "lucide-react";
 import Image from "next/image";
+import { toast } from "sonner";
 
 interface FileUploadProps {
   value?: File[];
@@ -11,9 +12,12 @@ interface FileUploadProps {
 }
 
 const FileUpload = ({ value = [], onChange }: FileUploadProps) => {
+  const maxSize = 30 * 1024 * 1024;
+  const maxFiles = 2;
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    maxFiles: 2,
-    maxSize: 30 * 1024 * 1024,
+    maxFiles: maxFiles,
+    maxSize: maxSize,
     accept: {
       "image/*": [],
       "video/*": [],
@@ -22,6 +26,49 @@ const FileUpload = ({ value = [], onChange }: FileUploadProps) => {
     onDrop: (acceptedFiles) => {
       const newFiles = [...value, ...acceptedFiles].slice(0, 2);
       onChange?.(newFiles);
+    },
+    onDropRejected(fileRejections) {
+      const errorMessage: string[] = [];
+
+      fileRejections.forEach((el) => {
+        let message;
+
+        switch (el.errors[0].code) {
+          case "file-invalid-type":
+            message = "File must be images or videos or PDFs.";
+            break;
+
+          case "file-too-large":
+            message = maxSize
+              ? `File must be less than ${maxSize / (1024 * 1024)} MB.`
+              : "File is too large.";
+            break;
+
+          case "too-many-files":
+            message = maxFiles
+              ? `You can upload a maximum of ${maxFiles} files.`
+              : "Too many files uploaded.";
+            break;
+
+          default:
+            message = "Failed to upload files.";
+        }
+
+        if (!errorMessage.includes(message)) {
+          errorMessage.push(message);
+        }
+      });
+
+      errorMessage.forEach((el) => {
+        toast.error(el, {
+          style: {
+            background: "#ff4d4f",
+            color: "white",
+            fontSize: 18,
+            fontWeight: 600
+          },
+        });
+      });
     },
   });
 
@@ -86,7 +133,7 @@ const FileUpload = ({ value = [], onChange }: FileUploadProps) => {
                   e.stopPropagation();
                   removeFile(i);
                 }}
-                className="absolute right-1 top-1 z-10 rounded-full bg-black/70 p-1 text-white transition hover:bg-red-600"
+                className="absolute right-1 top-1 z-10 rounded-full bg-black/70 p-1 text-white transition cursor-pointer hover:bg-red-600"
                 aria-label={`Remove ${file.name}`}
               >
                 <X size={14} />
