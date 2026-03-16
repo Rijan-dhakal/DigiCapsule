@@ -21,9 +21,21 @@ export const CapsuleSchema = z.object({
   recipientEmail: z.email("Invalid Email"),
   capsulePassword: z
     .string()
-    .min(4, "Password must be at least 4 characters")
-    .max(16, "Password must be less than 16 characters"),
+    .max(16, "Password must be less than 16 characters")
+    .optional(),
   files: z.array(z.instanceof(File)).optional(),
 });
 
 export type TCapsuleSchema = z.infer<typeof CapsuleSchema>;
+
+export const CapsuleFileMetaSchema = z.object({
+  url: z.url(),
+  publicId: z.string(),
+  fileType: z.string(),
+});
+
+export const ServerCapsuleSchema = CapsuleSchema.omit({ files: true }).extend({
+  files: z.array(CapsuleFileMetaSchema).optional(),
+});
+
+// export type TServerCapsuleSchema = z.infer<typeof ServerCapsuleSchema>;

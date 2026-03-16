@@ -90,6 +90,7 @@ const FileUpload = ({ value = [], onChange }: FileUploadProps) => {
         <div className="text-4xl font-bold leading-none text-primary">+</div>
         <p className="mt-2 text-sm font-medium text-foreground">
           Drop files here, or browse from your device
+          <span className="text-muted-foreground text-xs ml-1">(Optional)</span>
         </p>
         <div className="mt-2 space-y-1 text-xs text-muted-foreground">
           <p>Images, videos, and PDF documents are supported</p>

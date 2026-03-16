@@ -12,6 +12,9 @@ import { Button } from "@/components/ui/button";
 import ErrorContainer from "./error-container";
 import FileUpload from "./file-uploads";
 import { toast } from "sonner";
+import { checkSession } from "@/lib/helper/check-session";
+import { CreateCapsuleAction } from "@/actions/create-capsule";
+import { useRouter } from "next/navigation";
 
 interface CloudinarySignatureResponse {
   signature: string;
@@ -30,6 +33,7 @@ interface UploadedAsset {
 }
 
 const CreatePage = () => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -97,6 +101,8 @@ const CreatePage = () => {
 
   const onSubmit = async function (data: TCapsuleSchema) {
     try {
+      await checkSession("You need to be logged in to create a capsule.");
+
       const filesToUpload = data.files ?? [];
       let uploadedAssets: UploadedAsset[] = [];
 
@@ -116,11 +122,24 @@ const CreatePage = () => {
 
       const payload = {
         ...data,
-        uploadedAssets,
+        files: uploadedAssets.map((file) => ({
+          url: file.secureUrl,
+          publicId: file.publicId,
+          fileType: file.resourceType,
+        })),
       };
 
-      console.log("Payload:", payload);
+      const capsuleCreationResponse = await CreateCapsuleAction(payload);
+
+      if (!capsuleCreationResponse.success) {
+        toast.error("Failed to create a capsule. Try again.");
+        return;
+      }
+
+      toast.success("Capsule created successfully.");
       reset();
+      router.push("/dashboard")
+     
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "File upload failed";
@@ -304,6 +323,7 @@ const CreatePage = () => {
                 type="email"
                 {...register("recipientEmail")}
                 placeholder="person@example.com"
+                autoComplete="username"
                 className="h-10 py-4 px-3 font-semibold border border-gray-500 rounded bg-gray-800 outline-none focus:border-gray-300"
               />
               {errors.recipientEmail && (
@@ -326,6 +346,7 @@ const CreatePage = () => {
                 type="password"
                 {...register("capsulePassword")}
                 placeholder="****"
+                autoComplete="current-password"
                 className="h-10 py-4 px-3 font-semibold border border-gray-500 rounded bg-gray-800 outline-none focus:border-gray-300"
               />
               {errors.capsulePassword && (
