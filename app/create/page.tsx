@@ -5,105 +5,52 @@ import { FaArrowLeft } from "react-icons/fa6";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CapsuleSchema, TCapsuleSchema } from "@/lib/validators/capsules";
-import CardComponent from "./card-component";
+import CardComponent from "./components/card-component";
 import DatePicker from "react-datepicker";
-import MarkdownEditor from "./markdown-editor";
+import MarkdownEditor from "./components/markdown-editor";
 import { Button } from "@/components/ui/button";
-import ErrorContainer from "./error-container";
-import FileUpload from "./file-uploads";
+import ErrorContainer from "./components/error-container";
+import FileUpload from "./components/file-uploads";
 import { toast } from "sonner";
 import { checkSession } from "@/lib/helper/check-session";
 import { CreateCapsuleAction } from "@/actions/create-capsule";
 import { useRouter } from "next/navigation";
-
-interface CloudinarySignatureResponse {
-  signature: string;
-  timestamp: number;
-  folder: string;
-  cloudName: string;
-  apiKey: string;
-}
-
-interface UploadedAsset {
-  url: string;
-  secureUrl: string;
-  publicId: string;
-  resourceType: string;
-  originalFilename: string;
-}
+import { useState } from "react";
+import { CapsuleCreationAlert } from "./components/capsule-creation-alert";
+import { UploadedAsset } from "@/lib/types/types";
+import { uploadToCloudinary } from "./upload-to-cloudinary";
 
 const CreatePage = () => {
   const router = useRouter();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [formData, setFormData] = useState<TCapsuleSchema | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const {
     register,
     handleSubmit,
     control,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     reset,
   } = useForm<TCapsuleSchema>({
     resolver: zodResolver(CapsuleSchema),
   });
 
-  const uploadToCloudinary = async (file: File): Promise<UploadedAsset> => {
-    const timestamp = Math.floor(Date.now() / 1000);
-
-    const signatureResponse = await fetch("/api/cloudinary/signature", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ timestamp }),
-    });
-
-    if (!signatureResponse.ok) {
-      throw new Error("Unable to generate Cloudinary upload signature");
-    }
-
-    const signatureData =
-      (await signatureResponse.json()) as CloudinarySignatureResponse;
-
-    if (!signatureData.cloudName || !signatureData.apiKey) {
-      throw new Error("Missing Cloudinary cloud name or API key");
-    }
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("api_key", signatureData.apiKey);
-    formData.append("timestamp", String(signatureData.timestamp));
-    formData.append("signature", signatureData.signature);
-    formData.append("folder", signatureData.folder);
-
-    const uploadResponse = await fetch(
-      `https://api.cloudinary.com/v1_1/${signatureData.cloudName}/auto/upload`,
-      {
-        method: "POST",
-        body: formData,
-      },
-    );
-
-    if (!uploadResponse.ok) {
-      const uploadError = await uploadResponse.json().catch(() => null);
-      const uploadErrorMessage =
-        uploadError?.error?.message || "Failed to upload file to Cloudinary";
-      throw new Error(uploadErrorMessage);
-    }
-
-    const uploadData = await uploadResponse.json();
-
-    return {
-      url: uploadData.url,
-      secureUrl: uploadData.secure_url,
-      publicId: uploadData.public_id,
-      resourceType: uploadData.resource_type,
-      originalFilename: uploadData.original_filename,
-    };
+  const onSubmit = async function (data: TCapsuleSchema) {
+    setFormData(data);
+    setOpenDialog(true);
+    setIsSubmitting(true);
   };
 
-  const onSubmit = async function (data: TCapsuleSchema) {
+  const confirmSubmit = async function () {
+    if (!formData) return;
+
+    setOpenDialog(false);
+
     try {
       await checkSession("You need to be logged in to create a capsule.");
 
-      const filesToUpload = data.files ?? [];
+      const filesToUpload = formData.files ?? [];
       let uploadedAssets: UploadedAsset[] = [];
 
       if (filesToUpload.length > 0) {
@@ -121,7 +68,7 @@ const CreatePage = () => {
       }
 
       const payload = {
-        ...data,
+        ...formData,
         files: uploadedAssets.map((file) => ({
           url: file.secureUrl,
           publicId: file.publicId,
@@ -138,8 +85,7 @@ const CreatePage = () => {
 
       toast.success("Capsule created successfully.");
       reset();
-      router.push("/dashboard")
-     
+      router.push("/dashboard");
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "File upload failed";
@@ -147,6 +93,8 @@ const CreatePage = () => {
         id: "cloudinary-upload",
       });
       console.error("Cloudinary upload failed:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -366,6 +314,11 @@ const CreatePage = () => {
           </div>
         </form>
       </div>
+      <CapsuleCreationAlert
+        open={openDialog}
+        onOpenChange={setOpenDialog}
+        onConfirm={confirmSubmit}
+      />
     </div>
   );
 };
