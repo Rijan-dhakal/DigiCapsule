@@ -39,13 +39,13 @@ const CreatePage = () => {
   const onSubmit = async function (data: TCapsuleSchema) {
     setFormData(data);
     setOpenDialog(true);
-    setIsSubmitting(true);
   };
 
   const confirmSubmit = async function () {
     if (!formData) return;
 
     setOpenDialog(false);
+    setIsSubmitting(true);
 
     try {
       await checkSession("You need to be logged in to create a capsule.");
@@ -94,7 +94,10 @@ const CreatePage = () => {
       });
       console.error("Cloudinary upload failed:", error);
     } finally {
-      setIsSubmitting(false);
+      // Timeout to prevent resubmitting in delay between redirects
+      setTimeout(() => {
+        setIsSubmitting(false);
+      }, 2000);
     }
   };
 
@@ -309,7 +312,7 @@ const CreatePage = () => {
               disabled={isSubmitting}
               className="px-4 py-2 w-full text-lg font-semibold rounded-md cursor-pointer "
             >
-              Create Capsule
+              {isSubmitting ? "Creating..." : "Create Capsule"}
             </Button>
           </div>
         </form>
