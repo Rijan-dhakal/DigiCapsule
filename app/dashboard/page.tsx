@@ -1,6 +1,7 @@
 import { checkSession } from "@/lib/helper/check-session";
 import CapsuleDetailsSection from "./capsule-details-section";
 import { GetUserCapsulesAction } from "@/actions/fetch-user-capsules";
+import TabsComponent from "./tabs";
 
 const Dashboard = async () => {
   const session = await checkSession(
@@ -23,6 +24,10 @@ const Dashboard = async () => {
             unlockedCapsules: data ? data.length - lockedCapsules.length : 0,
           }}
         />
+      </div>
+
+      <div className="mt-4">
+        <TabsComponent capsules={data || []} loading={!data} />
       </div>
     </div>
   );

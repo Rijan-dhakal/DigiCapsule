@@ -58,3 +58,18 @@ export interface UploadedAsset {
   resourceType: string;
   originalFilename: string;
 }
+
+export interface CapsuleType {
+  id: string;
+  userId: string;
+  title: string;
+  category: string;
+  content: string;
+  unlockAt: Date;
+  status: "unlocked" | "locked";
+  hint: string | null;
+  recipientEmail: string | null;
+  isDelivered: boolean;
+  createdAt: Date;
+  updatedAt: Date | null;
+}

@@ -35,7 +35,7 @@ const CapsuleDetailsSection = ({
           icon={<FaArchive color="gray" size={22} />}
           label="TOTAL"
           value={
-            capsuleDetails.lockedCapsules + capsuleDetails.unlockedCapsules
+            capsuleDetails.lockedCapsules + capsuleDetails.unlockedCapsules || 0
           }
           labelColorClass="text-gray-200"
         />
@@ -44,7 +44,7 @@ const CapsuleDetailsSection = ({
         <StatCard
           icon={<IoIosLock size={18} />}
           label="LOCKED"
-          value={capsuleDetails.lockedCapsules}
+          value={capsuleDetails.lockedCapsules || 0}
           labelColorClass="text-blue-500"
         />
 
@@ -52,7 +52,7 @@ const CapsuleDetailsSection = ({
         <StatCard
           icon={<IoMdUnlock size={18} />}
           label="UNLOCKED"
-          value={capsuleDetails.unlockedCapsules}
+          value={capsuleDetails.unlockedCapsules || 0}
           labelColorClass="text-green-500"
         />
       </div>
