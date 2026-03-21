@@ -9,9 +9,10 @@ const TopMainSection = () => {
         <Image
           src="/bg.png"
           alt="Background"
+          sizes="100vw"
+          loading="eager"
           fill
           className="object-cover object-[center_55%]"
-          priority
           quality={75}
         />
       </div>
@@ -22,7 +23,7 @@ const TopMainSection = () => {
           </h1>
           <p className="text-lg mt-6 px-3 font-normal lg:text-xl">
             Create time locked digital capsules. Upload memories today, and
-            we'll <br /> keep them safe until the moment is right
+            we&apos;ll <br /> keep them safe until the moment is right
           </p>
           <div className="mt-12 gap-4 flex flex-col justify-center md:flex-row md:items-center">
             <Button className="cursor-pointer text-lg">

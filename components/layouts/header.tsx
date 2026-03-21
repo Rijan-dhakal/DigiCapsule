@@ -12,13 +12,7 @@ const Header = () => {
   const pathname = usePathname();
   const { data, isPending } = useSession();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const cookie =
-    typeof document !== "undefined"
-      ? document.cookie
-          .split("; ")
-          .find((row) => row.startsWith("__Secure-better-auth.session_token="))
-          ?.split("=")[1]
-      : undefined;
+  const isLoggedInRoute = !(pathname === "/" || pathname === "/login");
 
   const loggedInNavItems = [
     { href: "/dashboard", label: "Dashboard" },
@@ -90,7 +84,7 @@ const Header = () => {
         <div>
           <ul className="hidden md:flex md:items-center md:gap-6">
             {isPending
-              ? cookie
+              ? isLoggedInRoute
                 ? renderNavItems(loggedInNavItems)
                 : renderNavItems(navItems)
               : data?.user
