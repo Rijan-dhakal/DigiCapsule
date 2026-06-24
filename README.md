@@ -41,14 +41,23 @@ It is the kind of thing you would use to write a letter to your future self, sen
 - A Cloudinary account
 - A Google OAuth app
 
-### Environment Variables
-
-Rename `.env.sample` to `.env` in the project root and use your details:
-
 ### Installation
 
 ```bash
 npm install
+```
+
+### Environment Variables
+
+Copy `.env.sample` to `.env` and fill in your own values:
+```bash
+# macOS / Linux
+cp .env.sample .env
+```
+
+```powershell
+# Windows (PowerShell)
+Copy-Item .env.sample .env
 ```
 
 ### Database Migration
