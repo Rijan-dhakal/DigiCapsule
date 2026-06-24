@@ -2,8 +2,6 @@
 
 Live link: [https://digicapsule.rijandhakal.com.np/](https://digicapsule.rijandhakal.com.np/)
 
-> This project is currently under development.
-
 DigiCapsule is a personal project the idea is simple: what if you could write a message, attach some photos or files, lock it away, and have it open only on a date you choose in the future? Like a time capsule, but digital.
 
 You create a capsule, write whatever you want (markdown supported), upload any files, pick an unlock date, and send it to someone's email. They won't be able to open it until the time comes. You can also add a hint — something vague to build a bit of anticipation and optionally lock it with a password on top of the date.
@@ -50,6 +48,7 @@ npm install
 ### Environment Variables
 
 Copy `.env.sample` to `.env` and fill in your own values:
+
 ```bash
 # macOS / Linux
 cp .env.sample .env
@@ -84,7 +83,3 @@ lib/            # Auth, database schema, validators, helpers
 drizzle/        # Migration SQL files and Drizzle meta
 public/         # Static assets
 ```
-
-## Status
-
-Still being built. The capsule creation flow works perfectly. The dashboard, profile, and settings pages are still being worked on.
