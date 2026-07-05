@@ -19,13 +19,13 @@ const LoginButton = () => {
         callbackURL: "/dashboard",
       });
       if (resp.error) {
+        setIsLoading(false);
         return toast.error(resp.error.message);
       }
     } catch (e) {
+      setIsLoading(false);
       console.error(e instanceof Error ? e.message : "Error. Try again");
       return toast.error(e instanceof Error ? e.message : "Error. Try again");
-    } finally {
-      setIsLoading(false);
     }
   };
 

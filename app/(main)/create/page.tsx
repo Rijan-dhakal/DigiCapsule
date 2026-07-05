@@ -30,11 +30,23 @@ const CreatePage = () => {
     register,
     handleSubmit,
     control,
+    setValue,
+    getValues,
     formState: { errors },
     reset,
   } = useForm<TCapsuleSchema>({
     resolver: zodResolver(CapsuleSchema),
   });
+
+  const handleImproveContent = async () => {
+    const content = getValues("content");
+    if (!content || content.trim() === "") {
+      toast.error(
+        "Content is empty. Please add some content before improving.",
+      );
+      return;
+    }
+  };
 
   const onSubmit = async function (data: TCapsuleSchema) {
     const checkQuota = await GetCapsuleLimitInfo();
@@ -186,6 +198,7 @@ const CreatePage = () => {
               <label className="font-semibold text-lg mb-2">
                 Capsule Content
               </label>
+              hello
               <Controller
                 name="content"
                 control={control}
@@ -197,13 +210,10 @@ const CreatePage = () => {
                   />
                 )}
               />
-
               {errors.content && (
                 <ErrorContainer message={errors.content.message} />
               )}
-
               {/* Container for file uploads */}
-
               <div className="mt-4">
                 <Controller
                   name="files"
