@@ -17,8 +17,9 @@ import { AlertBox } from "@/components/ui/shared/alert-box";
 import { UploadedAsset } from "@/lib/types/types";
 import { uploadToCloudinary } from "./upload-to-cloudinary";
 import BackToDashboard from "@/components/ui/shared/back-to-dashboard";
-import { GetCapsuleLimitInfo } from "@/actions/user-details";
+import { GetCapsuleLimitInfo, GetCurrentPlan } from "@/actions/user-details";
 import { Sparkles } from "lucide-react";
+import { requirePremium } from "@/lib/helper/requiredPremium";
 
 const CreatePage = () => {
   const router = useRouter();
@@ -41,10 +42,26 @@ const CreatePage = () => {
 
   const handleImproveContent = async () => {
     const content = getValues("content");
-    if (!content || content.trim() === "") {
-      toast.error(
-        "Content is empty. Please add some content before improving.",
-      );
+
+    try {
+      const planInfo = await requirePremium();
+
+      if (!planInfo.success) {
+        return {
+          success: false,
+          message: planInfo.message,
+        };
+      }
+
+      if (!content || content.trim() === "") {
+        toast.error(
+          "Content is empty. Please add some content before improving.",
+        );
+        return;
+      }
+    } catch (error) {
+      console.error("Error occurred while checking plan", error);
+      toast.error("An error occurred. Please try again.");
       return;
     }
   };

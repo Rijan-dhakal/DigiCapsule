@@ -12,7 +12,7 @@ export const GetCurrentPlan = async () => {
     if (!session) {
       return {
         success: false,
-        message: "You need to be logged in to fetch current plan.",
+        message: "Unauthorized",
       };
     }
 
