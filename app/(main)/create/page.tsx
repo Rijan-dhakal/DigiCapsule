@@ -18,6 +18,7 @@ import { UploadedAsset } from "@/lib/types/types";
 import { uploadToCloudinary } from "./upload-to-cloudinary";
 import BackToDashboard from "@/components/ui/shared/back-to-dashboard";
 import { GetCapsuleLimitInfo } from "@/actions/user-details";
+import { Sparkles } from "lucide-react";
 
 const CreatePage = () => {
   const router = useRouter();
@@ -195,10 +196,20 @@ const CreatePage = () => {
           {/* Markdown for content */}
           <div>
             <CardComponent count={2} title="The Memory">
-              <label className="font-semibold text-lg mb-2">
-                Capsule Content
-              </label>
-              hello
+              <div className="flex items-center justify-between mb-2">
+                <label className="font-semibold text-lg mb-2">
+                  Capsule Content
+                </label>
+                <Button
+                  type="button"
+                  className="relative bg-linear-to-r cursor-pointer from-indigo-600 to-blue-600 text-white hover:from-indigo-700 hover:to-blue-700 "
+                  onClick={handleImproveContent}
+                >
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  Improve with AI
+                </Button>
+              </div>
+
               <Controller
                 name="content"
                 control={control}
