@@ -20,5 +20,6 @@ export async function requirePremium() {
   return {
     success: true,
     plan: plan.data,
+    userId: plan.userId,
   };
 }

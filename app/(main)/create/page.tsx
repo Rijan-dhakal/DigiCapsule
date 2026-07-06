@@ -19,7 +19,6 @@ import { uploadToCloudinary } from "./upload-to-cloudinary";
 import BackToDashboard from "@/components/ui/shared/back-to-dashboard";
 import { GetCapsuleLimitInfo } from "@/actions/user-details";
 import { Sparkles } from "lucide-react";
-import { requirePremium } from "@/lib/helper/requiredPremium";
 import { improveContent } from "@/actions/improve-content";
 
 const CreatePage = () => {
@@ -43,18 +42,10 @@ const CreatePage = () => {
   });
 
   const handleImproveContent = async () => {
+    setIsImproving(true);
     const content = getValues("content");
 
     try {
-      const planInfo = await requirePremium();
-
-      if (!planInfo.success) {
-        return {
-          success: false,
-          message: planInfo.message,
-        };
-      }
-
       if (!content || content.trim() === "") {
         toast.error(
           "Content is empty. Please add some content before improving.",
@@ -83,6 +74,8 @@ const CreatePage = () => {
       console.error("Error occurred while checking plan", error);
       toast.error("An error occurred. Please try again.");
       return;
+    } finally {
+      setIsImproving(false);
     }
   };
 

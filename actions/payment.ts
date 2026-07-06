@@ -166,7 +166,6 @@ export const CreatePaymentAction = async ({
     }
 
     const userId = session.user.id;
-    console.log("Creating payment with userId:", userId);
 
     await db
       .insert(payments)

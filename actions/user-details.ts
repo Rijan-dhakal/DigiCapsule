@@ -26,6 +26,7 @@ export const GetCurrentPlan = async () => {
     return {
       success: true,
       data: plan[0].currentPlan,
+      userId: session.user.id,
     };
   } catch {
     return {

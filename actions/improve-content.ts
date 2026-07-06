@@ -2,6 +2,7 @@
 
 import { GoogleGenAI } from "@google/genai";
 import { requirePremium } from "@/lib/helper/requiredPremium";
+import { canUseAI } from "@/lib/helper/ai-limit";
 
 const prompt = `
 You are an expert Markdown editor.
@@ -68,6 +69,15 @@ export const improveContent = async (content: string) => {
       return {
         success: false,
         message: "You need a premium plan to use this feature.",
+      };
+    }
+
+    const aiUsage = await canUseAI(planInfo.userId);
+
+    if (!aiUsage.success) {
+      return {
+        success: false,
+        message: "You have reached your daily limit of 2 for AI usage.",
       };
     }
 
