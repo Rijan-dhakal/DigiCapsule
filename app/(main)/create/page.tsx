@@ -17,15 +17,17 @@ import { AlertBox } from "@/components/ui/shared/alert-box";
 import { UploadedAsset } from "@/lib/types/types";
 import { uploadToCloudinary } from "./upload-to-cloudinary";
 import BackToDashboard from "@/components/ui/shared/back-to-dashboard";
-import { GetCapsuleLimitInfo, GetCurrentPlan } from "@/actions/user-details";
+import { GetCapsuleLimitInfo } from "@/actions/user-details";
 import { Sparkles } from "lucide-react";
 import { requirePremium } from "@/lib/helper/requiredPremium";
+import { improveContent } from "@/actions/improve-content";
 
 const CreatePage = () => {
   const router = useRouter();
   const [openDialog, setOpenDialog] = useState(false);
   const [formData, setFormData] = useState<TCapsuleSchema | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isImproving, setIsImproving] = useState(false);
   const submitLockRef = useRef(false);
 
   const {
@@ -59,6 +61,24 @@ const CreatePage = () => {
         );
         return;
       }
+
+      const improvedContentResponse = await improveContent(content);
+      if (!improvedContentResponse.success) {
+        return toast.error(
+          improvedContentResponse.message ??
+            "Failed to improve content. Try again.",
+        );
+      }
+
+      if (
+        !improvedContentResponse.content ||
+        improvedContentResponse.content.trim() === ""
+      ) {
+        return toast.error("Failed to improve content. Try again.");
+      }
+
+      setValue("content", improvedContentResponse.content);
+      toast.success("Content improved successfully.");
     } catch (error) {
       console.error("Error occurred while checking plan", error);
       toast.error("An error occurred. Please try again.");
@@ -221,9 +241,16 @@ const CreatePage = () => {
                   type="button"
                   className="relative bg-linear-to-r cursor-pointer from-indigo-600 to-blue-600 text-white hover:from-indigo-700 hover:to-blue-700 "
                   onClick={handleImproveContent}
+                  disabled={isImproving}
                 >
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  Improve with AI
+                  {isImproving ? (
+                    "Improving..."
+                  ) : (
+                    <>
+                      <Sparkles className="mr-2 h-4 w-4" />
+                      <span>Improve with AI</span>
+                    </>
+                  )}
                 </Button>
               </div>
 
