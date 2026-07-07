@@ -68,6 +68,7 @@ const plans = [
       "Time lock scheduling",
       "Blur preview hints",
       "Email notifications on unlock",
+      "Content improvement with AI",
     ],
     btn: "Get Premium",
     btnVarient: "default" as const,
