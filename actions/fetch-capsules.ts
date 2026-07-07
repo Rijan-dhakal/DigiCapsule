@@ -135,6 +135,48 @@ export const GetCapsuleFiles = async ({ capsuleId }: { capsuleId: string }) => {
   }
 };
 
+export const GetCapsuleFilesByLink = async ({
+  capsuleId,
+  accessKey,
+}: {
+  capsuleId: string;
+  accessKey: string;
+}) => {
+  try {
+    const capsuleData = await db
+      .select({ accessKey: capsule.accessKey })
+      .from(capsule)
+      .where(eq(capsule.id, capsuleId))
+      .limit(1);
+
+    if (!capsuleData.length || capsuleData[0].accessKey !== accessKey) {
+      return {
+        success: false,
+        message: "Invalid access key",
+      };
+    }
+
+    const fetchedCapsuleFiles = await db
+      .select()
+      .from(capsuleFiles)
+      .where(eq(capsuleFiles.capsuleId, capsuleId));
+
+    return {
+      success: true,
+      data: fetchedCapsuleFiles,
+    };
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Failed to fetch capsule files.";
+    console.error(message);
+
+    return {
+      success: false,
+      message: "Failed to fetch capsule files",
+    };
+  }
+};
+
 export const GetCapsuleByLink = async ({
   capsuleId,
   key,

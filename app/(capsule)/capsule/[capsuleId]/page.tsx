@@ -1,6 +1,7 @@
 import {
   GetCapsuleByLink,
   GetCapsuleFiles,
+  GetCapsuleFilesByLink,
   GetCapsuleFromId,
 } from "@/actions/fetch-capsules";
 import { Link2 } from "lucide-react";
@@ -51,7 +52,12 @@ const CapsulePage = async ({
   let capsuleFiles, attachedMemories, attachedDocuments;
 
   if (capsuleData.status === "unlocked") {
-    capsuleFiles = await GetCapsuleFiles({ capsuleId: capsuleData.id });
+    capsuleFiles = key
+      ? await GetCapsuleFilesByLink({
+          capsuleId: capsuleData.id,
+          accessKey: key,
+        })
+      : await GetCapsuleFiles({ capsuleId: capsuleData.id });
     const allFiles = capsuleFiles.data ?? [];
     attachedMemories = allFiles.filter((file) => file.fileType === "image");
     attachedDocuments = allFiles.filter((file) => file.fileType !== "image");
